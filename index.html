@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Followed Users</title>
+    <script>
+        async function submitUsername() {
+            const username = document.getElementById('username').value;
+            const response = await fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username })
+            });
+            const result = await response.json();
+            alert(result.message);
+            if (response.ok) {
+                loadUsers();
+            }
+        }
+
+        async function loadUsers() {
+            const response = await fetch('/list');
+            const users = await response.json();
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            users.forEach(user => {
+                const listItem = document.createElement('li');
+                listItem.textContent = user;
+                userList.appendChild(listItem);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadUsers);
+    </script>
+</head>
+<body>
+    <h1>Followed Users</h1>
+    <input type="text" id="username" placeholder="Enter Twitter username">
+    <button onclick="submitUsername()">Submit</button>
+    <ul id="userList"></ul>
+</body>
+</html>
